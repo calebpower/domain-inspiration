@@ -1,6 +1,7 @@
 """This module provides the synonym model controller."""
 # dominsp/synonym.py
 
+import pythonwhois
 import re
 
 from nltk.corpus import wordnet
@@ -37,6 +38,11 @@ class SynonymHandler:
     read = self._db_handler.read_synonyms()
     return read.synonym_list
 
+  def is_registered(self, site) -> bool:
+    """Check if a domain has a WHOIS record."""
+    deets = pythonwhois.get_whois(site)
+    return deets['raw'][0].startswith('No match for')
+
   def process(self) -> None:
     """Process entries-- generate synonyms and their domain statuses."""
     syn_list = self.get_syn_list()
@@ -56,3 +62,14 @@ class SynonymHandler:
     self._db_handler.write_synonyms(syn_list)
     for syn in synonyms:
       self.add(syn.split("_"), 1)
+    syn_list = self.get_syn_list()
+    for id, syndict in enumerate(syn_list, 1):
+      word, status = syndict.values()
+      if status == 1:
+        site = '{}.com'.format(word)
+        if self.is_registered(site):
+          syndict["status"] = 2
+        else:
+          syndict["status"] = 3
+    ordered = sorted(syn_list, key=lambda d: d['word'])
+    self._db_handler.write_synonyms(ordered)

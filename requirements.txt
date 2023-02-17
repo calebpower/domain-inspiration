@@ -8,8 +8,10 @@ nltk==3.8.1
 packaging==23.0
 pluggy==1.0.0
 pytest==7.2.1
+pythonwhois-alt==2.4.6
 regex==2022.10.31
 shellingham==1.5.0.post1
+sqlite3==0.0.0
 Tkinter==0.0.0
 tomli==2.0.1
 tqdm==4.64.1
