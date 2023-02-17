@@ -89,6 +89,42 @@ def add(
       fg=typer.colors.GREEN,
     )
 
+@app.command(name="list")
+def list_all() -> None:
+  """List all synonyms."""
+  syn_handler = get_syn_handler()
+  syn_list = syn_handler.get_syn_list()
+  if len(syn_list) == 0:
+    typer.secho(
+      "There are no synynoms in the database.",
+      fg=typer.colors.YELLOW
+    )
+    raise typer.Exit()
+  typer.secho(
+    "\nSynonyms:\n",
+    fg=typer.colors.CYAN,
+    bold=True,
+  )
+  columns = (
+    "word            ",
+    "| status"
+  )
+  headers = "".join(columns)
+  typer.secho(
+    headers,
+    fg=typer.colors.CYAN,
+    bold=True,
+  )
+  typer.secho("-" * len(headers), fg=typer.colors.CYAN)
+  for id, syn in enumerate(syn_list, 1):
+    word, status = syn.values()
+    typer.secho(
+      f"{word}{(len(columns[0]) - len(word)) * ' '}"
+      f"|      {status}{(len(columns[1]) - len(str(status)) - 4) * ' '}",
+      fg=typer.colors.CYAN,
+    )
+  typer.secho("-" * len(headers) + "\n", fg=typer.colors.CYAN)
+
 @app.callback()
 def main(
   version: Optional[bool] = typer.Option(

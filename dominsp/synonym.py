@@ -28,3 +28,8 @@ class SynonymHandler:
     read.synonym_list.append(syn)
     write = self._db_handler.write_synonyms(read.synonym_list)
     return CurrentSynonym(syn, write.error)
+
+  def get_syn_list(self) -> List[Dict[str, Any]]:
+    """Return the current list of synonyms."""
+    read = self._db_handler.read_synonyms()
+    return read.synonym_list
