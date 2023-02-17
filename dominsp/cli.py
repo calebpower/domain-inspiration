@@ -106,7 +106,7 @@ def list_all() -> None:
     bold=True,
   )
   columns = (
-    "word            ",
+    "word                                                    ",
     "| status"
   )
   headers = "".join(columns)
@@ -124,6 +124,16 @@ def list_all() -> None:
       fg=typer.colors.CYAN,
     )
   typer.secho("-" * len(headers) + "\n", fg=typer.colors.CYAN)
+
+@app.command(name="process")
+def process_all() -> None:
+  """Process yet-to-be-processed words."""
+  syn_handler = get_syn_handler()
+  syn_handler.process()
+  typer.secho(
+    "Finished processing words.",
+    fg=typer.colors.GREEN,
+  )
 
 @app.callback()
 def main(
