@@ -41,7 +41,7 @@ class SynonymHandler:
   def is_registered(self, site) -> bool:
     """Check if a domain has a WHOIS record."""
     deets = pythonwhois.get_whois(site)
-    return deets['raw'][0].startswith('No match for')
+    return not deets['raw'][0].startswith('No match for')
 
   def process(self) -> None:
     """Process entries-- generate synonyms and their domain statuses."""

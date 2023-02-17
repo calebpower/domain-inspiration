@@ -125,6 +125,30 @@ def list_all() -> None:
     )
   typer.secho("-" * len(headers) + "\n", fg=typer.colors.CYAN)
 
+@app.command(name="list-available")
+def list_available() -> None:
+  """List available domains."""
+  syn_handler = get_syn_handler()
+  syn_list = syn_handler.get_syn_list()
+  typer.secho(
+    f"\nAvailable Domains:\n"
+    f"{17 * '-'}",
+    fg=typer.colors.CYAN,
+    bold=True,
+  )
+  for id, syn in enumerate(syn_list, 1):
+    word, status = syn.values()
+    if status == 3:
+      typer.secho(
+        f"{word}.com",
+        fg=typer.colors.CYAN
+      )
+  typer.secho(
+    f"{17 * '-'}",
+    fg=typer.colors.CYAN,
+    bold=True,
+  )
+
 @app.command(name="process")
 def process_all() -> None:
   """Process yet-to-be-processed words."""

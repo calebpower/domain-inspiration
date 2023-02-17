@@ -59,7 +59,7 @@ flycheck_*.el
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
@@ -85,6 +85,9 @@ Temporary Items
 *.icloud
 
 ### Python ###
+# Dump files
+python*.core
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
