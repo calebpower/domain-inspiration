@@ -53,7 +53,9 @@ class SynonymHandler:
       if status == 0:
         for syn in wordnet.synsets(word):
           for lemma in syn.lemmas():
-            synonyms.append(re.sub(r'[^A-Za-z0-9]', "", lemma.name().lower()))
+            new_syn = re.sub(r'[^A-Za-z0-9]', "", lemma.name().lower())
+            if len(new_syn) > 2:
+              synonyms.append(new_syn)
         syndict["status"] = 1
     synonyms = list(set(synonyms))
     for id, syndict in enumerate(syn_list, 1):
