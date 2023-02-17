@@ -2,11 +2,18 @@
 # dominsp/cli.py
 
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 import typer
 
-from dominsp import ERRORS, __app_name__, __version__, config, database
+from dominsp import (
+  ERRORS,
+  __app_name__,
+  __version__,
+  config,
+  database,
+  synonym
+)
 
 app = typer.Typer()
 
@@ -44,6 +51,43 @@ def _version_callback(value: bool) -> None:
   if value:
     typer.echo(f"{__app_name__} v{__version__}")
     raise typer.Exit()
+
+def get_syn_handler() -> synonym.SynonymHandler:
+  if config.CONFIG_FILE_PATH.exists():
+    db_path = database.get_database_path(config.CONFIG_FILE_PATH)
+  else:
+    typer.secho(
+      'Config file not found. Please run "dominsp init"',
+      fg=typer.colors.RED,
+    )
+    raise typer.Exit(1)
+  if db_path.exists():
+    return synonym.SynonymHandler(db_path)
+  else:
+    typer.secho(
+      'Database not found. Please run "dominsp init"',
+      fg=typer.colors.RED,
+    )
+    raise typer.Exit(1)
+
+@app.command()
+def add(
+  word: List[str] = typer.Argument(...),
+) -> None:
+  """Add a new word to look up."""
+  syn_handler = get_syn_handler()
+  syn, error = syn_handler.add(word)
+  if error:
+    typer.secho(
+      f'Tried to add a word but got error "{ERRORS[error]}"',
+      fg=typer.colors.RED,
+    )
+    raise typer.Exit(1)
+  else:
+    typer.secho(
+      f"""New word "{syn['word']}" was queued.""",
+      fg=typer.colors.GREEN,
+    )
 
 @app.callback()
 def main(
