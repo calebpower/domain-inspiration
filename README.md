@@ -52,7 +52,7 @@ If all else fails, please try turning it off and back on again.
 You should start off by initializing the database.
 
 ```bash
-python -m dominsp init
+$ python -m dominsp init
 ```
 
 This will prompt you to choose a location to save your stuff. Or use the default,
@@ -62,14 +62,14 @@ Then, go add some preliminary words. For example, here I'll use `dog` and `cat`
 as a starting point.
 
 ```bash
-python -m dominsp add dog
-python -m dominsp add cat
+$ python -m dominsp add dog
+$ python -m dominsp add cat
 ```
 
 Then, you'll want to process them. Use this command to do that.
 
 ```bash
-python -m dominsp process
+$ python -m dominsp process
 ```
 
 That'll take a bit probably. You won't really get a response until it's done, or
@@ -79,7 +79,7 @@ case, it'll tell you if it's done.
 You can list all of the results if you choose.
 
 ```bash
-python -m dominsp list
+$ python -m dominsp list
 ```
 
 That'll give you a thrown-together table of all retrieved synonyms. There's a status
@@ -97,7 +97,7 @@ to cut straight to the chase-- a listing of domains that are available (for now)
 You can get that with the following command.
 
 ```bash
-python -m dominsp list-available
+$ python -m dominsp list-available
 ```
 
 That'll give you a list of the domains that were available at the time of query.
