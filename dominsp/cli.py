@@ -107,7 +107,8 @@ def list_all() -> None:
   )
   columns = (
     "word                                                    ",
-    "| status"
+    "| status ",
+    "| combined"
   )
   headers = "".join(columns)
   typer.secho(
@@ -117,10 +118,11 @@ def list_all() -> None:
   )
   typer.secho("-" * len(headers), fg=typer.colors.CYAN)
   for id, syn in enumerate(syn_list, 1):
-    word, status = syn.values()
+    word, status, combined = syn.values()
     typer.secho(
       f"{word}{(len(columns[0]) - len(word)) * ' '}"
-      f"|      {status}{(len(columns[1]) - len(str(status)) - 4) * ' '}",
+      f"|      {status}{(len(columns[1]) - len(str(status)) - 7) * ' '}"
+      f"|    {combined}",
       fg=typer.colors.CYAN,
     )
   typer.secho("-" * len(headers) + "\n", fg=typer.colors.CYAN)
@@ -137,7 +139,7 @@ def list_available() -> None:
     bold=True,
   )
   for id, syn in enumerate(syn_list, 1):
-    word, status = syn.values()
+    word, status, combined = syn.values()
     if status == 3:
       typer.secho(
         f"{word}.com",
@@ -156,6 +158,16 @@ def process_all() -> None:
   syn_handler.process()
   typer.secho(
     "Finished processing words.",
+    fg=typer.colors.GREEN,
+  )
+
+@app.command(name="combine")
+def process_all() -> None:
+  """Combine words together to make compound candidates."""
+  syn_handler = get_syn_handler()
+  syn_handler.combine()
+  typer.secho(
+    "Finished combining words.",
     fg=typer.colors.GREEN,
   )
 

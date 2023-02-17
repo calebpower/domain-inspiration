@@ -104,6 +104,25 @@ That'll give you a list of the domains that were available at the time of query.
 I haven't built a way to reset the list for re-checking, but the database file
 is easy to manually edit. It's just JSON. Enjoy.
 
+One more thing. You are able to combine words-- but there's a limitation, because
+this can get pretty intensive if the word lists are long. Each set of two words
+can be combined exactly once using the following command.
+
+```bash
+$ python -m dominsp combine
+```
+
+Words will also be combined with themselves. So for example, if you combine the
+words `cat` and `dog`, you'll end up with:
+
+- catcat
+- catdog
+- dogcat
+- dogdog
+
+So that's obviously something like O(n^2) right off the bat in terms of complexity.
+You'll need to re-process new synonyms after you use it. Use it wisely.
+
 ## Licensing
 
 I've released this under the MIT License. That holds true unless the licensing

@@ -19,12 +19,13 @@ class SynonymHandler:
   def __init__(self, db_path: Path) -> None:
     self._db_handler = DatabaseHandler(db_path)
 
-  def add(self, word: List[str], status: int=0) -> CurrentSynonym:
+  def add(self, word: List[str], status: int=0, combined: bool=False) -> CurrentSynonym:
     """Add a new synonym to the database."""
     word_text = " ".join(word).lower()
     syn = {
       "word": word_text,
       "status": status,
+      "combined": combined
     }
     read = self._db_handler.read_synonyms()
     if read.error == DB_READ_ERROR:
@@ -48,7 +49,7 @@ class SynonymHandler:
     syn_list = self.get_syn_list()
     synonyms = []
     for id, syndict in enumerate(syn_list, 1):
-      word, status = syndict.values()
+      word, status, combined = syndict.values()
       if status == 0:
         for syn in wordnet.synsets(word):
           for lemma in syn.lemmas():
@@ -56,7 +57,7 @@ class SynonymHandler:
         syndict["status"] = 1
     synonyms = list(set(synonyms))
     for id, syndict in enumerate(syn_list, 1):
-      word, status = syndict.values()
+      word, status, combined = syndict.values()
       if word in synonyms:
         synonyms.remove(word)
     self._db_handler.write_synonyms(syn_list)
@@ -64,7 +65,7 @@ class SynonymHandler:
       self.add(syn.split("_"), 1)
     syn_list = self.get_syn_list()
     for id, syndict in enumerate(syn_list, 1):
-      word, status = syndict.values()
+      word, status, combined = syndict.values()
       if status == 1:
         site = '{}.com'.format(word)
         if self.is_registered(site):
@@ -73,3 +74,23 @@ class SynonymHandler:
           syndict["status"] = 3
     ordered = sorted(syn_list, key=lambda d: d['word'])
     self._db_handler.write_synonyms(ordered)
+
+  def combine(self) -> None:
+    """Combine each entry with every other entry to form compound words."""
+    syn_list = self.get_syn_list()
+    combinations = []
+    for id_1, syndict_1 in enumerate(syn_list, 1):
+      word_1, status_1, combined_1 = syndict_1.values()
+      if not combined_1:
+        for id_2, syndict_2 in enumerate(syn_list, 1):
+          word_2, status_2, combined_2 = syndict_2.values()
+          if not combined_2:
+            combo = str(word_1 + word_2)
+            if combo not in combinations:
+              combinations.append(combo)
+    for id, syndict in enumerate(syn_list, 1):
+      word, status, combined = syndict.values()
+      if word in combinations:
+        combinations.remove(word)
+    for combo in combinations:
+      self.add([combo], 1, True)
